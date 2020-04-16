@@ -1,0 +1,116 @@
+project_name: Moscow
+
+osm_shp_url: http://download.geofabrik.de/russia/central-fed-district-latest-free.shp.zip
+force_download_data: False
+
+path_to_data_raw: data/raw
+path_to_data_interim: data/interim
+path_to_data_processed: data/processed
+
+objects_to_featurize:
+  h3:
+    region_of_interest_shp: data/raw/Moscow.shp
+    hexagons_resolution: 9
+  polygons:
+    layer_shp: coverage_moscow.shp
+  points:
+    layer_shp: places.shp
+
+geo_objects:
+  - eat_point:
+      shp: gis_osm_pois_free_1.shp
+      filters:
+        fclass:
+          - restaurant
+          - cafe
+          - biergarten
+          - fast_food
+          - food_court
+  - drink_point:
+      shp: gis_osm_pois_free_1.shp
+      filters:
+        fclass:
+          - pub
+          - bar
+  - shop_point:
+      shp: gis_osm_pois_free_1.shp
+      filters:
+        fclass:
+          - bakery
+          - books
+          - convenience
+          - department_store
+          - mall
+          - supermarket
+          - beverages
+          - butcher
+          - chemist
+          - clothes
+          - shoes
+          - garden_centre
+          - kiosk
+          - newsagent
+          - optician
+          - stationery
+          - florist
+          - gift_shop
+          - shoe_shop
+          - furniture_shop
+          - beauty_shop
+          - bookshop
+          - bicycle_shop
+          - mobile_phone_shop
+          - computer_shop
+          - sports_shop
+          - toy_shop
+          - outdoor_shop
+          - video_shop
+#          - alcohol
+  - education_point:
+      shp: gis_osm_pois_free_1.shp
+      filters:
+        fclass:
+          - school
+          - kindergarten
+          - library
+          - college
+          - university
+  - mobile_phone_shop_point:
+      shp: gis_osm_pois_free_1.shp
+      filters:
+        fclass:
+          - mobile_phone_shop
+  - subway_point:
+      shp: gis_osm_pois_free_1.shp
+      filters:
+        fclass:
+          - subway_entrance
+#  - building_polygon:
+#      shp: gis_osm_buildings_a_free_1.shp
+#      filters:
+#        fclass:
+#          - building
+
+featurizations:
+  - eat_number:
+      operation: count_contains
+      geo_object: eat_point
+  - drink_number:
+      operation: count_contains
+      geo_object: drink_point
+  - shop_number:
+      operation: count_contains
+      geo_object: shop_point
+  - education_number:
+      operation: count_contains
+      geo_object: education_point
+  - mobile_phone_shop_number:
+      operation: count_contains
+      geo_object: mobile_phone_shop_point
+  - subway_number:
+      operation: count_contains
+      geo_object: subway_point
+#  - building_number:
+#      operation: count_intersects
+#      geo_object: building_polygon
+

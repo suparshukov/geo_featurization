@@ -1,0 +1,9 @@
+# local package
+-e .
+
+# external requirements
+descartes
+geopandas
+h3
+keplergl
+yaml
