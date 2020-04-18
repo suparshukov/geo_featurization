@@ -1,4 +1,5 @@
-from ..geo.geo_utils import count_contains
+from ..geo.geo_operation import count_contains, count_intersects, distance_to_nearest
+
 
 class Featurization:
 
@@ -22,11 +23,21 @@ class GeoFeaturizer:
 
         for featurization in self.featurizations:
 
-            if self.geo_objects[featurization.geo_object].layer.shape[0] == 0:
+            geo_object_layer = self.geo_objects[featurization.geo_object].load_layer()
+
+            if geo_object_layer.shape[0] == 0:
                 self.featurized_layer.layer[featurization.name] = 0
                 continue
 
             if featurization.operation == 'count_contains':
                 self.featurized_layer.layer = count_contains(self.featurized_layer.layer,
-                                                             self.geo_objects[featurization.geo_object],
+                                                             geo_object_layer,
                                                              featurization.name)
+            if featurization.operation == 'count_intersects':
+                self.featurized_layer.layer = count_intersects(self.featurized_layer.layer,
+                                                               geo_object_layer,
+                                                               featurization.name)
+            if featurization.operation == 'distance_to_nearest':
+                self.featurized_layer.layer = distance_to_nearest(self.featurized_layer.layer,
+                                                                  geo_object_layer,
+                                                                  featurization.name)

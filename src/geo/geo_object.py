@@ -9,13 +9,14 @@ class GeoObject:
         self._region_of_interest = region_of_interest
         self._shp_file = shp_file
         self._filters = filters
-        self._load_layer()
 
-    def _load_layer(self):
+    def load_layer(self):
         layer = geo_utils.load_shp(self._shp_file)
         layer = layer[layer.intersects(self._region_of_interest.unary_union)]
         row_mask = layer[list(self._filters.keys())].isin(self._filters).all(1)
-        self.layer = layer[row_mask]
+        layer = layer[row_mask]
+
+        return layer
 
 
 class FeaturizedLayer:
@@ -34,5 +35,3 @@ class FeaturizedLayer:
         layer = geo_utils.get_hexagons_for_region(region_of_interest, hexagons_resolution)
         return cls(layer)
 
-    def featurize(self, geo_object, operation):
-        pass

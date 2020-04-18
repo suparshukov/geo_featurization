@@ -65,7 +65,7 @@ geo_objects:
           - toy_shop
           - outdoor_shop
           - video_shop
-#          - alcohol
+          - alcohol
   - education_point:
       shp: gis_osm_pois_free_1.shp
       filters:
@@ -80,16 +80,21 @@ geo_objects:
       filters:
         fclass:
           - mobile_phone_shop
-  - subway_point:
-      shp: gis_osm_pois_free_1.shp
+  - railway_station_point:
+      shp: gis_osm_transport_free_1.shp
       filters:
         fclass:
-          - subway_entrance
-#  - building_polygon:
-#      shp: gis_osm_buildings_a_free_1.shp
-#      filters:
-#        fclass:
-#          - building
+          - railway_station
+  - bus_stop_point:
+      shp: gis_osm_transport_free_1.shp
+      filters:
+        fclass:
+          - bus_stop
+  - building_polygon:
+      shp: gis_osm_buildings_a_free_1.shp
+      filters:
+        fclass:
+          - building
 
 featurizations:
   - eat_number:
@@ -107,10 +112,18 @@ featurizations:
   - mobile_phone_shop_number:
       operation: count_contains
       geo_object: mobile_phone_shop_point
-  - subway_number:
+  - railway_station_point_number:
       operation: count_contains
-      geo_object: subway_point
-#  - building_number:
-#      operation: count_intersects
-#      geo_object: building_polygon
-
+      geo_object: railway_station_point
+  - bus_stop_point_number:
+      operation: count_contains
+      geo_object: bus_stop_point
+  - building_number:
+      operation: count_intersects
+      geo_object: building_polygon
+  - distance_to_nearest_railway_station:
+      operation: distance_to_nearest
+      geo_object: railway_station_point
+  - distance_to_nearest_bus_stop:
+      operation: distance_to_nearest
+      geo_object: bus_stop_point

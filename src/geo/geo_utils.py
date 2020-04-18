@@ -1,9 +1,12 @@
 import geopandas as gpd
 import json
+import numpy as np
 import pandas as pd
 import shapely
 
 from h3 import h3
+from scipy.spatial import cKDTree
+from shapely.geometry import Point
 
 
 def load_shp(filename):
@@ -13,32 +16,13 @@ def load_shp(filename):
     return layer
 
 
-def get_geo_objects(geo_objects_config, path_to_data, region_of_interest):
-
-    geo_objects = dict()
-
-    for geo_object in geo_objects_config:
-        geo_object_name = list(geo_object.keys())[0]
-        shp_filename = geo_object[geo_object_name]['shp']
-        filters = geo_object[geo_object_name]['filters']
-        layer = load_shp(path_to_data + '/' + shp_filename)
-        layer = layer[layer.intersects(region_of_interest.unary_union)]
-        row_mask = layer[list(filters.keys())].isin(filters).all(1)
-        layer = layer[row_mask]
-        geo_objects[geo_object_name] = layer
-
-    return geo_objects
-
-
 def get_hexagons_for_region(region_of_interest, resolution):
 
     boundary = shapely.ops.cascaded_union(region_of_interest['geometry'])
     if boundary.geom_type == 'MultiPolygon':
-        region_of_interest_json = (gpd.GeoSeries(
-            list(shapely.ops.cascaded_union(region_of_interest['geometry']))).to_json())
+        region_of_interest_json = (gpd.GeoSeries(list(boundary)).to_json())
     elif boundary.geom_type == 'Polygon':
-        region_of_interest_json = (gpd.GeoSeries(
-            shapely.ops.cascaded_union(region_of_interest['geometry'])).to_json())
+        region_of_interest_json = (gpd.GeoSeries(boundary).to_json())
 
     hexagons = pd.DataFrame()
     for feature in json.loads(region_of_interest_json)['features']:
@@ -55,25 +39,25 @@ def get_hexagons_for_region(region_of_interest, resolution):
 
 
 def save_geo_objects():
-    pass
+    raise NotImplementedError
+
 
 def save_layer():
-    pass
+    raise NotImplementedError
+
 
 def get_geo_object():
-    pass
+    raise NotImplementedError
 
 
-def count_contains(feat_layer, geo_object, name):
+def dist_from_points_to_nearest_point(points_from, points_to, dist_field_name):
 
-    feat_layer.reset_index(drop=True, inplace=True)
-    geo_object.layer.reset_index(drop=True, inplace=True)
-    dfsjoin = gpd.sjoin(feat_layer, geo_object.layer, op='contains', how='left')
-    agg_df = dfsjoin.groupby(level=0).agg({'index_right': 'count'})
-    agg_df.rename({'index_right': name}, axis=1, inplace=True)
-    feat_layer = feat_layer.merge(agg_df, how='left', left_index=True, right_index=True)
+    n_from = np.array(list(zip(points_from.geometry.x, points_from.geometry.y)))
+    n_to = np.array(list(zip(points_to.geometry.x, points_to.geometry.y)))
+    btree = cKDTree(n_to)
+    dist, idx = btree.query(n_from, k=1)
+    dist_gdf = pd.concat(
+        [points_from.reset_index(drop=True), points_to.loc[idx, :].reset_index(drop=True),
+         pd.Series(dist, name=dist_field_name)], axis=1)
 
-    return feat_layer
-
-
-
+    return dist_gdf
