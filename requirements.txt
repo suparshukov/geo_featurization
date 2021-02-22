@@ -1,9 +1,8 @@
-# local package
--e .
-
-# external requirements
-descartes
-geopandas
-h3
-keplergl
-yaml
+keplergl==0.2.2
+Shapely==1.7.1
+numpy==1.20.1
+requests==2.25.1
+scipy==1.6.1
+geopandas==0.8.2
+h3==3.7.1
+pandas==1.2.2

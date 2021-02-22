@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "geo_featurization"
+version = "0.1.0"
+description = ""
+authors = ["Sergey Parshukov <sparshukov85@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+keplergl = "0.2.2"
+Shapely = "1.7.1"
+numpy = "1.20.1"
+requests = "2.25.1"
+scipy = "1.6.1"
+geopandas = "0.8.2"
+h3 = "3.7.1"
+pandas = "1.2.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+line_length = 79
+force_single_line = true
+atomic = true
+include_trailing_comma = true
+lines_after_imports = 2
+lines_between_types = 1
+use_parentheses = true
+src_paths = ["src", "tests"]
+filter_files = true
