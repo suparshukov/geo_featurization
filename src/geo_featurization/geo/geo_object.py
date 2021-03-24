@@ -1,29 +1,34 @@
+import geopandas as gpd
+
 from . import geo_utils
 
 
 class GeoObject(object):
-    """
+    """Spatial object layer, which is used to calculate features
 
     Attributes:
-        name: .
-        shp_file: .
+        name: Name (alias) of spatial objects layer (for example, bus station, supermarket etc.).
+        shp_path: Path to a shape file where the spatial objects layer is stored.
         filters: .
         region_of_interest: .
     """
 
-    def __init__(self, name, shp_file, filters, region_of_interest):
-        """Inits GeoObject."""
+    def __init__(self,
+                 name: str,
+                 shp_file: str,
+                 filters: dict[str, str],
+                 region_of_interest: gpd.GeoSeries):
+        """Inits GeoObject"""
         self.name = name
         self._region_of_interest = region_of_interest
         self._shp_file = shp_file
         self._filters = filters
 
-    def load_layer(self):
+    def load_layer(self) -> gpd.GeoDataFrame:
         """
 
         Returns:
-
-        Raises:
+            Layer of spatial objects with filters applied
 
         """
         layer = geo_utils.load_shp(self._shp_file)
@@ -35,43 +40,42 @@ class GeoObject(object):
 
 
 class FeaturizedLayer(object):
-    """
+    """Layer of spatial objects for which features need to be calculated
 
     Attributes:
-        layer: .
+        layer (gpd.GeoDataFrame):
     """
 
-    def __init__(self, layer):
-        """Inits FeaturizedLayer."""
+    def __init__(self, layer: gpd.GeoDataFrame):
+        """Inits FeaturizedLayer"""
         self.layer = layer
 
     @classmethod
-    def from_shp(cls, layer_shp):
+    def from_shp(cls, shp_path: str):
         """
+        Load spatial objects from a shape file.
 
         Args:
-            layer_shp (): .
+            shp_path (string): Path to a shape file.
 
         Returns:
-
-        Raises:
-
+            Layer of spatial objects to featurize
         """
-        layer = geo_utils.load_shp(layer_shp)
+        layer = geo_utils.load_shp(shp_path)
+
         return cls(layer)
 
     @classmethod
-    def from_hexagons(cls, region_of_interest_shp, hexagons_resolution=8):
+    def from_hexagons(cls, region_of_interest_shp: str, hexagons_resolution: int = 8):
         """
+        Create spatial objects layer based on geometry of a region of interest and H3 grid resolution.
 
         Args:
-            region_of_interest_shp ():
-            hexagons_resolution ():
+            region_of_interest_shp (str): Path to a shape file with a region of interest geometry
+            hexagons_resolution (int):
 
         Returns:
-
-        Raises:
-
+            Layer of spatial objects to featurize
         """
 
         region_of_interest = geo_utils.load_shp(region_of_interest_shp)

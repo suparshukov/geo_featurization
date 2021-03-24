@@ -1,11 +1,14 @@
-from ..geo.geo_operation import count_contains
-from ..geo.geo_operation import count_intersects
-from ..geo.geo_operation import distance_to_nearest
+from ..geo.geo_object import GeoObject, FeaturizedLayer
+
+from ..geo.geo_operation import count_contains, count_intersects, distance_to_nearest
 
 
 class Featurization(object):
 
-    def __init__(self, name, operation, geo_object, params=None):
+    def __init__(self, name: str,
+                 operation: str,
+                 geo_object: str,
+                 params: dict[str, str] = None):
         """
         Initialization
 
@@ -23,7 +26,9 @@ class Featurization(object):
 
 class GeoFeaturizer(object):
 
-    def __init__(self, featurized_layer, geo_objects, featurizations):
+    def __init__(self, featurized_layer: FeaturizedLayer,
+                 geo_objects: dict[str, GeoObject],
+                 featurizations: list[Featurization]):
         """
         Initialization
 
@@ -40,9 +45,7 @@ class GeoFeaturizer(object):
 
         for featurization in self.featurizations:
 
-            geo_object_layer = self.geo_objects[
-                featurization.geo_object
-            ].load_layer()
+            geo_object_layer = self.geo_objects[featurization.geo_object].load_layer()
 
             if geo_object_layer.shape[0] == 0:
                 self.featurized_layer.layer[featurization.name] = 0

@@ -84,12 +84,13 @@ def calc_dist_from_points_to_nearest_point(
     """Calculate distance for each point in a layer to the nearest point of another layer
 
     Args:
-        points_from: .
-        points_to: .
-        dist_field_name: .
+        points_from: point layer for which we need to calculate the distances
+        points_to: point layer to which objects we calculate distances
+        dist_field_name: name of the field in which the results of distance calculation will be written
 
     Returns:
-
+        A GeoPandas containing a field with the original points, a field with the closest points
+        from the second layer and a field with calculated distances
     """
 
     n_from = np.array(

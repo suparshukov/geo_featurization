@@ -3,18 +3,19 @@ import geopandas as gpd
 from .geo_utils import calc_dist_from_points_to_nearest_point
 
 
-def count_contains(feat_layer, geo_object, name):
-    """
+def count_contains(feat_layer: gpd.GeoDataFrame,
+                   geo_object: gpd.GeoDataFrame,
+                   name: str) -> gpd.GeoDataFrame:
+    """Count the number of objects inside the objects of the input layer
 
     Args:
-        feat_layer:
-        geo_object:
-        name:
+        feat_layer: a layer to add features to
+        geo_object: a layer of objects, the number of which
+                    within the objects of the source layer we want to count
+        name: a name for a result field
 
     Returns:
-
-    Raises:
-
+        An input layer with new feature added - number of objects of other layer inside
     """
 
     # TODO: check geometry types
@@ -30,18 +31,19 @@ def count_contains(feat_layer, geo_object, name):
     return feat_layer
 
 
-def count_intersects(feat_layer, geo_object, name):
-    """
+def count_intersects(feat_layer: gpd.GeoDataFrame,
+                     geo_object: gpd.GeoDataFrame,
+                     name: str) -> gpd.GeoDataFrame:
+    """Count the number of intersections of objects with objects in the input layer
 
     Args:
-        feat_layer:
-        geo_object:
-        name:
+        feat_layer: a layer to add features to
+        geo_object: a layer of objects, the number of intersections of which
+                    with the objects of the source layer we want to count
+        name: a name for a result field
 
     Returns:
-
-    Raises:
-
+        An input layer with new feature added - number of intersected objects of other layer
     """
 
     # TODO: check geometry types
@@ -57,24 +59,25 @@ def count_intersects(feat_layer, geo_object, name):
     return feat_layer
 
 
-def distance_to_nearest(feat_layer, geo_object, name):
-    """
+def distance_to_nearest(feat_layer: gpd.GeoDataFrame,
+                        geo_object: gpd.GeoDataFrame,
+                        name: str) -> gpd.GeoDataFrame:
+    """Calculate distances from objects in the input layer to the nearest objects in another layer
 
     Args:
-        feat_layer:
-        geo_object:
-        name:
+        feat_layer: a layer to add features to
+        geo_object: layer, to the closest objects of which from the objects
+                    of the input layer we want to calculate the distances
+        name: a name for a result field
 
     Returns:
-
-    Raises:
-
+        An input layer with new feature added - distance to the nearest object of other layer
     """
 
     if (feat_layer.shape[0] == 0) or (geo_object.shape[0] == 0):
         return feat_layer
 
-    # TODO: pass feat_layer geometry field instead? GeoSeries
+    # TODO: pass feat_layer geometry field instead GeoSeries?
     layer = (
         feat_layer
         if feat_layer.iloc[0]["geometry"].geom_type == "Point"
